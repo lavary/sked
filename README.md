@@ -14,6 +14,9 @@ To install the package, run the following command:
 composer require lavary\sked
 ```
 
+After that, create a file named `sked.yml` and add the following content:
+
+
 ## Starting the Scheduler
 
 After the package is installed, a file named `sked` in copied to your `vendor\bin` directory. 
@@ -32,6 +35,8 @@ To create a basic task:
 
 ```php
 <?php
+
+// Tasks/adminstrative.php
 
 use Sked\Schedule;
 
@@ -56,6 +61,16 @@ $schedule->task('./deploy.sh')
          ->at('12:30')
          ->appendOutputTo('/var/log/backup.log');
 ```
+
+You can categorize your tasks definitions in separate files based on their usage, but you need specify the tasks location in your `sked.yml` under `src` entry. To do this, create a file named `sked.yml` in your project's root directory and paste the following entry.
+
+```
+src: '/absolute/path/to/your/tasks/directory'
+```
+
+Please note that you need to modify the above path based on your project structure.
+
+The scheduler scans the respective directory recursively,  collects all the task files and registers them one by one.
 
 ## Scheduling Frequency and Constraints
 
