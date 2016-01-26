@@ -24,8 +24,6 @@
         "php": ">=5.4.0",
         "illuminate/support": "~5.2",
         "illuminate/console": "~5.2",
-        "Illuminate/Contracts": "~5.2",
-        "Illuminate/Container": "~5.2",
         "symfony/yaml": "^3.0",
         "symfony/finder": "^3.0"
 
