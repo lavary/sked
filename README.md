@@ -24,11 +24,11 @@ So your server-level cron job could be like the following:
 * * * * * path/to/php path/to/your/project/vendor/bin/sked  >> /dev/null 2>&1
 ``` 
 
-## Basic Usage
+## Usage
 
 To create a basic task:
 
-```
+```php
 <?php
 
 use Sked\Schedule;
@@ -41,6 +41,18 @@ $schedule->task('cp project project-bk')
          ->everyMinute()
          ->appendOutputTo('/Users/lavary/www/sammi.log')
        
+```
+
+Or:
+
+```php
+<?php
+$schedule->task('./deploy.sh')
+         ->cd('/home')
+         ->weekly()
+         ->sundays()
+         ->at('12:30')
+         ->appendOutputTo('/var/log/backup.log');
 ```
 
 ## Scheduling Frequency and Constraints
@@ -74,7 +86,9 @@ These methods may be combined with additional constraints to create even more fi
 
 $schedule->task(function () {
     // Runs once a week on Monday at 13:00...
-})->weekly()->mondays()->at('13:00');
+})->weekly()
+  ->mondays()
+  ->at('13:00');
 ```
 
 here's the list of constraints you can use with the above frequency methods:
@@ -161,6 +175,23 @@ $shcedule->task('./back.sh')
          ->emailOutputTo('admin@example.com');
 ```
 
+## Changing Directories
+
+You can use the `cd()` method to change directory before running a command:
+
+```php
+<?php
+
+// ...
+
+$schedule->task('./deploy.sh')
+         ->cd('/home')
+         ->weekly()
+         ->sundays()
+         ->at('12:30')
+         ->appendOutputTo('/var/log/backup.log');
+
+```
 
 ## Hooks
 
