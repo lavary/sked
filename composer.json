@@ -1,0 +1,42 @@
+{
+    "name": "lavary/sked",
+    "description": "Schedule your tasks right from the code.",
+    "type": "library",
+    "keywords": [
+        "scheduler",
+        "cron jobs",
+        "cron"
+    ],
+    "homepage": "https://github.com/lavary/sked",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Reza M. Lavaryan",
+            "email": "mrl.8081@gmail.com",
+            "role": "developer"
+         }
+    ],
+    "support": {
+        "email": "mrl.8081@gmail.com",
+        "issues": "http://github.com/lavary/sked/issues"
+    },
+    "require": {
+        "php": ">=5.4.0",
+        "illuminate/support": "~5.2",
+        "illuminate/console": "~5.2",
+        "Illuminate/Contracts": "~5.2",
+        "Illuminate/Container": "~5.2",
+        "symfony/yaml": "^3.0",
+        "symfony/finder": "^3.0"
+
+    },
+    "autoload": {
+        "psr-4": {
+            "Sked\\": "src/"
+        }
+    },
+    "bin": [
+        "sked"
+    ],
+    "minimum-stability": "dev"
+}
