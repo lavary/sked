@@ -197,7 +197,7 @@ $schedule->task('./deploy.sh')
 
 You can call a set of callbacks before and after  the command is run:
 
-```
+```php
 <?php
 $shcedule->task('./back.sh')
          ->before(function() {
