@@ -129,7 +129,7 @@ By default, scheduled tasks will be run even if the previous instance of the tas
 $schedule->command('./backup.sh')->withoutOverlapping();
 ```
 
-## Task Output
+## Handling Output
 
 You save the task output to a file:
 
@@ -178,4 +178,14 @@ $shcedule->task('./back.sh')
 
 ```
 
+## Credits
 
+Credit goes to [Taylor Otwell](https://github.com/taylorotwell) for creating such a nice tool and documentation.
+
+## If You Need Help
+
+Please submit all issues and questions using GitHub issues and I will try to help you.
+
+
+## License
+Sked is free software distributed under the terms of the MIT license.
