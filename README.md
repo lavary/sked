@@ -91,7 +91,7 @@ The scheduler scans the respective directory recursively, collects all the task 
 
 You can use a wide variety of scheduling frequencies according to your use case:
 
-```yml
+```php
 | Method               | Description                            |
 |----------------------|----------------------------------------|
 | cron('* * * * * *')  | Run the task on a custom Cron schedule |
@@ -130,7 +130,7 @@ return $schedule;
 
 Here's the list of constraints you can use with the above frequency methods:
 
-```yml
+```php
 | Constraint    | Description                          |
 |---------------|--------------------------------------|
 | weekdays()    | Limit the task to weekdays           |
