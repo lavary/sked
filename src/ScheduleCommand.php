@@ -62,7 +62,8 @@ class ScheduleCommand {
         $defaultConfigFileName = 'sked.yml';
         
         $config = self::parseConfig(__DIR__ . '/../' . $defaultConfigFileName);
-                 
+        $config['src'] = __DIR__ . '/' . $config['src'];
+        
         if (file_exists(__DIR__ . '/../../../../' . $defaultConfigFileName)) {
             $config = array_merge($config, self::parseConfig(__DIR__ . '/../../../../' . $defaultConfigFileName));
         }
