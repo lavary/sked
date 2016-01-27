@@ -31,12 +31,14 @@ So your server-level cron job could be like the following:
 
 ## Usage
 
-To create a basic task:
+All tasks should be defined in files. You can define many tasks in the same file. Just remember to return the `Scheduler` object, as below:
+
+
 
 ```php
 <?php
 
-// Tasks/adminstrative.php
+// /var/www/project/Tasks/adminstratives.php
 
 use Sked\Schedule;
 
@@ -47,6 +49,11 @@ $schedule->task('cp project project-bk')
          ->description('Copying the project directory')
          ->everyMinute()
          ->appendOutputTo('/Users/lavary/www/sammi.log')
+// ...
+  
+// You should return the schedule object
+return $schedule; 
+  
        
 ```
 
@@ -60,9 +67,16 @@ $schedule->task('./deploy.sh')
          ->sundays()
          ->at('12:30')
          ->appendOutputTo('/var/log/backup.log');
+         
+// ...
+
+// You should return the Schedule object.
+return $scheduler;
+         
+         
 ```
 
-You can categorize your tasks definitions in separate files based on their usage, but you need specify the tasks location in your `sked.yml` under `src` entry. To do this, create a file named `sked.yml` in your project's root directory and paste the following entry.
+To run the tasks, we need to make sure Sked is aware of the task's location. To do this, you need to create a file named `sked.yml` in your project's root directory and put your tasks's location in place, in front of `src` key.
 
 ```
 src: '/absolute/path/to/your/tasks/directory'
@@ -70,13 +84,15 @@ src: '/absolute/path/to/your/tasks/directory'
 
 Please note that you need to modify the above path based on your project structure.
 
-The scheduler scans the respective directory recursively,  collects all the task files and registers them one by one.
+The scheduler scans the respective directory recursively, collects all the task files and registers the tasks inside them. You can categorize the tasks in separate files and sub-directories based on their usage.
+
+> By default Sked assume that all your tasks reside in `Tasks` directory, in your project's root directory.
 
 ## Scheduling Frequency and Constraints
 
 You can use a wide variety of scheduling frequencies according to your use case:
 
-```
+```php
 | Method               | Description                            |
 |----------------------|----------------------------------------|
 | cron('* * * * * *')  | Run the task on a custom Cron schedule |
@@ -91,7 +107,7 @@ You can use a wide variety of scheduling frequencies according to your use case:
 | weekly()             | Run the task every week                |
 | monthly()            | Run the task every month               |
 | quarterly()          | Run the task every quarter             |
-| yearly               | Run the task every year                |
+| yearly()             | Run the task every year                |
 ```
 
 These methods may be combined with additional constraints to create even more finely tuned schedules that only run on certain days of the week. For example, to schedule a command to run weekly on Monday:
@@ -110,7 +126,7 @@ $schedule->task(function () {
 
 here's the list of constraints you can use with the above frequency methods:
 
-```
+```php
 | Constraint    | Description                          |
 |---------------|--------------------------------------|
 | weekdays()    | Limit the task to weekdays           |
