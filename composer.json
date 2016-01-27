@@ -22,12 +22,15 @@
     },
     "require": {
         "php": ">=5.4.0",
-        "illuminate/support": "~5.2",
-        "illuminate/console": "~5.2",
+        "illuminate/contracts": "5.2.*",
         "mtdowling/cron-expression": "~1.0",
         "nesbot/carbon": "~1.19",
+        "symfony/console": "2.7.*",
         "symfony/yaml": "^3.0",
-        "symfony/finder": "^3.0"
+        "symfony/finder": "^3.0",
+        "symfony/process": "2.7.*",
+        "guzzle/guzzle": "~6.1",
+        
 
     },
     "autoload": {

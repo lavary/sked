@@ -4,7 +4,6 @@ namespace Sked;
 
 use Symfony\Component\Yaml\Parser;
 use Symfony\Component\Finder\Finder;
-use Illuminate\Container\Container;
 
 class ScheduleCommand {
 

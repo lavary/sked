@@ -715,7 +715,7 @@ class Event
     {
         return $this->sendOutputTo($location, true);
     }
-
+    
     /**
      * E-mail the results of the scheduled operation.
      *
@@ -736,7 +736,7 @@ class Event
             $this->emailOutput($mailer, $addresses);
         });
     }
-
+    
     /**
      * E-mail the output of the event to the recipients.
      *
