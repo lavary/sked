@@ -717,45 +717,6 @@ class Event
     }
     
     /**
-     * E-mail the results of the scheduled operation.
-     *
-     * @param  array|mixed  $addresses
-     * @return $this
-     *
-     * @throws \LogicException
-     */
-    public function emailOutputTo($addresses)
-    {
-        if (is_null($this->output) || $this->output == $this->getDefaultOutput()) {
-            throw new LogicException('Must direct output to a file in order to e-mail results.');
-        }
-
-        $addresses = is_array($addresses) ? $addresses : func_get_args();
-
-        return $this->then(function (Mailer $mailer) use ($addresses) {
-            $this->emailOutput($mailer, $addresses);
-        });
-    }
-    
-    /**
-     * E-mail the output of the event to the recipients.
-     *
-     * @param  \Illuminate\Contracts\Mail\Mailer  $mailer
-     * @param  array  $addresses
-     * @return void
-     */
-    protected function emailOutput(Mailer $mailer, $addresses)
-    {
-        $mailer->raw(file_get_contents($this->output), function ($m) use ($addresses) {
-            $m->subject($this->getEmailSubject());
-
-            foreach ($addresses as $address) {
-                $m->to($address);
-            }
-        });
-    }
-
-    /**
      * Get the e-mail subject line for output results.
      *
      * @return string
