@@ -1,6 +1,6 @@
 # Sked
 
-Create a cron job once and for all, manage the rest right from the code.
+Create just one cron job once and for all, manage the rest right from the code.
 
 [![Latest Unstable Version](https://poser.pugx.org/lavary/sked/v/unstable.svg)](https://packagist.org/packages/lavary/sked)
 
