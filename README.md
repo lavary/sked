@@ -235,7 +235,7 @@ return $schedule;
 
 or Email it:
 
-```
+```php
 <?php
 
 // ...
