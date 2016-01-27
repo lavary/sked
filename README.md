@@ -1,10 +1,10 @@
 # Sked
 
-Create and manage your cron jobs right from the code.
+Create a cron job once and for all, manage the rest right from the code.
 
 [![Latest Unstable Version](https://poser.pugx.org/lavary/sked/v/unstable.svg)](https://packagist.org/packages/lavary/sked)
 
-Sked is an framework-agnostic package for creating cron jobs using a fluent API. It's been build on top of the [Laravel task scheduler](https://laravel.com/docs/master/scheduling), but can be used in different environments and contexts.
+Sked is a framework-agnostic package for creating cron jobs using a fluent API. It's been built on top of the powerful [Laravel task scheduler](https://laravel.com/docs/master/scheduling), but the effort has been made to make Laravel Task Scheduler available to other environments and contexts, while providing additional features.
 
 ## Installation
 
@@ -14,16 +14,13 @@ To install the package, run the following command:
 composer require lavary\sked
 ```
 
-After that, create a file named `sked.yml` and add the following content:
-
-
 ## Starting the Scheduler
 
-After the package is installed, a file named `sked` in copied to your `vendor\bin` directory. 
+After the package is installed, command `sked` is symlinked to the `vendor/bin` directory. You may make a symlink of the file in `/usr/bin` directory, to have access to it from anywhere.
 
-This is the only cron you need to add at server level, which is run every minute and delegates responsibility to the scheduler service.
+This is the only cron you need to **add** at server level, which is run every minute and delegates responsibility to the scheduler service (however you can change the frequency if you know what you're doing).
 
-So your server-level cron job could be like the following:
+So the server-level cron job could be as following:
 
 ```
 * * * * * path/to/php path/to/your/project/vendor/bin/sked  >> /dev/null 2>&1
@@ -31,7 +28,7 @@ So your server-level cron job could be like the following:
 
 ## Usage
 
-All tasks should be defined in files. You can define many tasks in the same file. Just remember to return the `Scheduler` object, as below:
+All tasks should be defined in files. You can define tasks in the same file or across different files. Just remember to return the `Scheduler` object in each file:
 
 
 
@@ -44,13 +41,13 @@ use Sked\Schedule;
 
 $schedule = new Schedule();
 
-$schedule->task('cp project project-bk')
-         
+$schedule->task('cp project project-bk')       
          ->description('Copying the project directory')
          ->everyMinute()
-         ->appendOutputTo('/Users/lavary/www/sammi.log')
+         ->appendOutputTo('/Users/lavary/www/sammi.log');
+
 // ...
-  
+
 // You should return the schedule object
 return $schedule; 
   
@@ -61,6 +58,9 @@ Or:
 
 ```php
 <?php
+
+// ...
+
 $schedule->task('./deploy.sh')
          ->cd('/home')
          ->weekly()
@@ -72,21 +72,20 @@ $schedule->task('./deploy.sh')
 
 // You should return the Schedule object.
 return $scheduler;
-         
-         
 ```
 
 To run the tasks, we need to make sure Sked is aware of the task's location. To do this, you need to create a file named `sked.yml` in your project's root directory and put your tasks's location in place, in front of `src` key.
 
+**sked.yml**
 ```
 src: '/absolute/path/to/your/tasks/directory'
 ```
 
 Please note that you need to modify the above path based on your project structure.
 
-The scheduler scans the respective directory recursively, collects all the task files and registers the tasks inside them. You can categorize the tasks in separate files and sub-directories based on their usage.
+The scheduler scans the respective directory recursively, collects all the task files and registers the tasks inside them. As mentioned earlier, you can categorize the tasks in separate files and sub-directories based on their usage.
 
-> By default Sked assume that all your tasks reside in `Tasks` directory, in your project's root directory.
+> By default Sked assume that all the tasks reside in `Tasks` directory, in your project's root directory.
 
 ## Scheduling Frequency and Constraints
 
@@ -122,9 +121,14 @@ $schedule->task(function () {
 })->weekly()
   ->mondays()
   ->at('13:00');
+
+// ...
+
+return $schedule;
+
 ```
 
-here's the list of constraints you can use with the above frequency methods:
+Here's the list of constraints you can use with the above frequency methods:
 
 ```php
 | Constraint    | Description                          |
@@ -153,6 +157,11 @@ You can run or skip a schedule based on a certain condition.
 $schedule->task('./backup.sh')->daily()->when(function () {
     return true;
 });
+
+// ...
+
+return $schedule;
+
 ```
 
 or skip it:
@@ -161,9 +170,14 @@ or skip it:
 <?php
 
 // ...
+
 $schedule->task('./backup.sh')->daily()->skip(function () {
     return false;
 });
+
+// ...
+
+return $schedule;
 
 ```
 
@@ -173,7 +187,15 @@ By default, scheduled tasks will be run even if the previous instance of the tas
 
 ```php
 <?php
+
+// ...
+
 $schedule->command('./backup.sh')->withoutOverlapping();
+
+// ...
+
+return $schedule;
+
 ```
 
 ## Handling Output
@@ -188,24 +210,43 @@ You save the task output to a file:
 $shcedule->task('./back.sh')
          ->sendOutputTo('/var/log/backups.log');
 
+// ...
+
+return $schedule;
+
 ```
 
 or append it
 
 ```php
 <?php
+
+// ...
+
 $shcedule->task('./back.sh')
          ->appendOutputTo('/var/log/backups.log');
+
+// ...
+
+return $schedule;
+
 ```
 
 
 or Email it:
 
-```
+```php
 <?php
+
+// ...
+
 $shcedule->task('./back.sh')
          ->sendOutputTo('/var/log/backups.log')
          ->emailOutputTo('admin@example.com');
+// ...
+
+return $schedule;
+
 ```
 
 ## Changing Directories
@@ -224,6 +265,10 @@ $schedule->task('./deploy.sh')
          ->at('12:30')
          ->appendOutputTo('/var/log/backup.log');
 
+// ...
+
+return $schedule;
+
 ```
 
 ## Hooks
@@ -232,6 +277,9 @@ You can call a set of callbacks before and after  the command is run:
 
 ```php
 <?php
+
+// ...
+
 $shcedule->task('./back.sh')
          ->before(function() {
             // Initialization phase
@@ -239,6 +287,10 @@ $shcedule->task('./back.sh')
          ->after(function() {
             // Cleanup phase
          });
+
+// ...
+
+return $schedule;
 
 ```
 
