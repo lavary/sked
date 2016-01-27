@@ -29,7 +29,7 @@
         "symfony/yaml": "^3.0",
         "symfony/finder": "^3.0",
         "symfony/process": "2.7.*",
-        "guzzle/guzzle": "~6.1"
+        "guzzle/guzzle": "~3.9"
 
 
     },
