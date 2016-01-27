@@ -1,10 +1,10 @@
 # Sked
 
-Create and manage your cron jobs right from the code.
+Create a cron job once and for all, manage the rest right from the code.
 
 [![Latest Unstable Version](https://poser.pugx.org/lavary/sked/v/unstable.svg)](https://packagist.org/packages/lavary/sked)
 
-Sked is an framework-agnostic package for creating cron jobs using a fluent API. It's been build on top of the [Laravel task scheduler](https://laravel.com/docs/master/scheduling), but can be used in different environments and contexts.
+Sked is an framework-agnostic package for creating cron jobs using a fluent API. It's been build on top of the powerful [Laravel task scheduler](https://laravel.com/docs/master/scheduling), but the effor has been made to make Laravel Task Scheduler available to other environments and contexts, while provoding additional features.
 
 ## Installation
 
