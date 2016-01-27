@@ -232,23 +232,6 @@ return $schedule;
 
 ```
 
-
-or Email it:
-
-```php
-<?php
-
-// ...
-
-$shcedule->task('./back.sh')
-         ->sendOutputTo('/var/log/backups.log')
-         ->emailOutputTo('admin@example.com');
-// ...
-
-return $schedule;
-
-```
-
 ## Changing Directories
 
 You can use the `cd()` method to change directory before running a command:
