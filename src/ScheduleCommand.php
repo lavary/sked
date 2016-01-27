@@ -20,7 +20,7 @@ class ScheduleCommand {
     
         foreach ($taskFiles as $key => $taskFile) {
                         
-            $task   = require $taskFile->getRealPath();            
+            $schedule = require $taskFile->getRealPath();
             $events = $schedule->dueEvents(new Invoker());
             
             foreach ($events as $event) {

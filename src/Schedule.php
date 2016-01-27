@@ -2,12 +2,14 @@
 
 namespace Sked;
 
-use Illuminate\Console\Scheduling\Schedule as BaseSchedule;
-use Illuminate\Support\Collection;
-use Symfony\Component\Process\ProcessUtils;
-use Symfony\Component\Process\PhpExecutableFinder;
-
-class Schedule extends BaseSchedule {
+class Schedule
+{
+    /**
+     * All of the events on the schedule.
+     *
+     * @var array
+     */
+    protected $events = [];
 
     /**
      * An alias for the command() method
@@ -21,7 +23,7 @@ class Schedule extends BaseSchedule {
         return $this->command($command);
 
      }    
-    
+
     /**
      * Add a new command event to the schedule.
      *
@@ -40,12 +42,12 @@ class Schedule extends BaseSchedule {
      *
      * @param  string  $command
      * @param  array  $parameters
-     * @return \Sked\Event
+     * @return \Illuminate\Console\Scheduling\Event
      */
     public function exec($command, array $parameters = [])
     {
         if (count($parameters)) {
-            $command .= ' ' . $this->compileParameters($parameters);
+            $command .= ' '.$this->compileParameters($parameters);
         }
 
         $this->events[] = $event = new Event($command);
@@ -54,6 +56,29 @@ class Schedule extends BaseSchedule {
     }
 
     /**
+     * Compile parameters for a command.
+     *
+     * @param  array  $parameters
+     * @return string
+     */
+    protected function compileParameters(array $parameters)
+    {
+        return collect($parameters)->map(function ($value, $key) {
+            return is_numeric($key) ? $value : $key.'='.(is_numeric($value) ? $value : ProcessUtils::escapeArgument($value));
+        })->implode(' ');
+    }
+
+    /**
+     * Get all of the events on the schedule.
+     *
+     * @return array
+     */
+    public function events()
+    {
+        return $this->events;
+    }
+
+     /**
      * Get all of the events on the schedule that are due.
      *
      * @param  \Sked\Invoker $invoker
