@@ -53,7 +53,7 @@ The scheduler scans the respective directory recursively, collects all the task 
 ```php
 <?php
 
-// /var/www/project/Tasks/adminstratives.php
+// /var/www/project/Tasks/adminstrativeTasks.php
 
 use Sked\Schedule;
 
