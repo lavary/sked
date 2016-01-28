@@ -28,7 +28,7 @@ class ScheduleCommand {
             }
 
             if (count($events) === 0) {
-                //echo 'No scheduled commands are ready to run.';
+                echo 'No scheduled commands are ready to run.';
             }
 
         } 
