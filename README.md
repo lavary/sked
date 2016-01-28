@@ -18,9 +18,9 @@ composer require lavary\sked
 
 ## Starting the Scheduler
 
-After the package is installed, command `sked` is symlinked to the `vendor/bin` directory. You may make a symlink of the file in `/usr/bin` directory, to have access to it from anywhere.
+After the package is installed, command `sked` is symlinked to the `vendor/bin` directory. You may create a symlink of the file in `/usr/bin` directory, to have access to it from anywhere.
 
-This is the only cron you need to **add** at server level, which is run every minute and delegates responsibility to the scheduler service (however you can change the frequency if you know what you're doing).
+This is the only cron you need to install at server level, which runs every minute and delegates responsibility to the scheduler service (however you can change the frequency if you know what you're doing).
 
 So the server-level cron job could be as following:
 
@@ -30,53 +30,9 @@ So the server-level cron job could be as following:
 
 ## Usage
 
-All tasks should be defined in files. You can define tasks in the same file or across different files. Just remember to return the `Scheduler` object in each file:
+All tasks should be defined in files with a name ending with `Tasks.php`, as an example: `adminstrativeTasks.php`. To run the tasks, you need to make sure Sked is aware of the task's location. By default Sked assume all the tasks reside in `Tasks` directory, in your project's root directory.
 
-
-
-```php
-<?php
-
-// /var/www/project/Tasks/adminstratives.php
-
-use Sked\Schedule;
-
-$schedule = new Schedule();
-
-$schedule->task('cp project project-bk')       
-         ->description('Copying the project directory')
-         ->everyMinute()
-         ->appendOutputTo('/Users/lavary/www/sammi.log');
-
-// ...
-
-// You should return the schedule object
-return $schedule; 
-  
-       
-```
-
-Or:
-
-```php
-<?php
-
-// ...
-
-$schedule->task('./deploy.sh')
-         ->cd('/home')
-         ->weekly()
-         ->sundays()
-         ->at('12:30')
-         ->appendOutputTo('/var/log/backup.log');
-         
-// ...
-
-// You should return the Schedule object.
-return $scheduler;
-```
-
-To run the tasks, we need to make sure Sked is aware of the task's location. To do this, you need to create a file named `sked.yml` in your project's root directory and put your tasks's location in place, in front of `src` key.
+But if you need to have your tasks in another localtion, you need to create a YAML file named `sked.yml` in your project's root directory and put your tasks's location in place - in front of `src` key:
 
 **sked.yml**
 ```
@@ -85,9 +41,61 @@ src: '/absolute/path/to/your/tasks/directory'
 
 Please note that you need to modify the above path based on your project structure.
 
-The scheduler scans the respective directory recursively, collects all the task files and registers the tasks inside them. As mentioned earlier, you can categorize the tasks in separate files and sub-directories based on their usage.
+If your YAML file name is different, you can pass the name as an option to the `sked` command - when you're installing the cron:
 
-> By default Sked assume that all the tasks reside in `Tasks` directory, in your project's root directory.
+```
+* * * * * path/to/php path/to/your/project/vendor/bin/sked  --configuration-file="/path/to/custom/yaml/file"  >> /dev/null 2>&1
+``` 
+
+The scheduler scans the respective directory recursively, collects all the task files ending with `Tasks.php` and registers the tasks inside each file. You can define tasks in the same file or across different files and directories based on their usage.
+
+Here's a basic task:
+
+```php
+<?php
+
+// /var/www/project/Tasks/adminstrativeTasks.php
+
+use Sked\Schedule;
+
+$schedule = new Schedule();
+
+$schedule->run('cp project project-bk')       
+         ->everyMinute()
+         ->description('Copying the project directory')
+         ->appendOutputTo('/Users/lavary/www/sammi.log');
+
+// ...
+
+// You should return the schedule object
+
+return $schedule; 
+  
+       
+```
+
+> **Important:** Please note that you need to return the `Schedule` instance at the end of each task file.
+
+Another example:
+
+```php
+<?php
+
+// ...
+
+$schedule->run('./deploy.sh')
+         ->in('/home')
+         ->weekly()
+         ->sundays()
+         ->at('12:30')
+         ->appendOutputTo('/var/log/backup.log');
+         
+// ...
+
+// You should return the Schedule object.
+
+return $scheduler;
+```
 
 ## Scheduling Frequency and Constraints
 
@@ -118,9 +126,8 @@ These methods may be combined with additional constraints to create even more fi
 
 // ...
 
-$schedule->task(function () {
-    // Runs once a week on Monday at 13:00...
-})->weekly()
+$schedule->run('./backup.sh')
+  ->weekly()
   ->mondays()
   ->at('13:00');
 
@@ -156,7 +163,7 @@ You can run or skip a schedule based on a certain condition.
 
 // ...
 
-$schedule->task('./backup.sh')->daily()->when(function () {
+$schedule->run('./backup.sh')->daily()->when(function () {
     return true;
 });
 
@@ -173,7 +180,7 @@ or skip it:
 
 // ...
 
-$schedule->task('./backup.sh')->daily()->skip(function () {
+$schedule->run('./backup.sh')->daily()->skip(function () {
     return false;
 });
 
@@ -185,14 +192,14 @@ return $schedule;
 
 ## Prevent Task Overlaps
 
-By default, scheduled tasks will be run even if the previous instance of the task is still running. To prevent this, you may use the withoutOverlapping method:
+By default, scheduled tasks will be run even if the previous instance of the task is still running. To prevent this, you may use `withoutOverlapping()` method:
 
 ```php
 <?php
 
 // ...
 
-$schedule->command('./backup.sh')->withoutOverlapping();
+$schedule->run('./backup.sh')->withoutOverlapping();
 
 // ...
 
@@ -202,14 +209,14 @@ return $schedule;
 
 ## Handling Output
 
-You save the task output to a file:
+You can save the task output to a file:
 
 ```php
 <?php
 
 // ...
 
-$shcedule->task('./back.sh')
+$shcedule->run('./back.sh')
          ->sendOutputTo('/var/log/backups.log');
 
 // ...
@@ -218,14 +225,14 @@ return $schedule;
 
 ```
 
-or append it
+or append it:
 
 ```php
 <?php
 
 // ...
 
-$shcedule->task('./back.sh')
+$shcedule->run('./back.sh')
          ->appendOutputTo('/var/log/backups.log');
 
 // ...
@@ -236,15 +243,15 @@ return $schedule;
 
 ## Changing Directories
 
-You can use the `cd()` method to change directory before running a command:
+You can use the `in()` method to change directory before running a command:
 
 ```php
 <?php
 
 // ...
 
-$schedule->task('./deploy.sh')
-         ->cd('/home')
+$schedule->run('./deploy.sh')
+         ->in('/home')
          ->weekly()
          ->sundays()
          ->at('12:30')
@@ -265,7 +272,7 @@ You can call a set of callbacks before and after  the command is run:
 
 // ...
 
-$shcedule->task('./back.sh')
+$shcedule->run('./back.sh')
          ->before(function() {
             // Initialization phase
          })
