@@ -5,7 +5,10 @@
     "keywords": [
         "scheduler",
         "cron jobs",
-        "cron"
+        "cron",
+        "Task Scheduler",
+        "PHP Task Scheduler",
+        "Laravel Task Scheduler"
     ],
     "homepage": "https://github.com/lavary/sked",
     "license": "MIT",
