@@ -18,7 +18,7 @@ class Schedule
      * @param  array  $parameters
      * @return \Sked\Event
      */
-     public function task ($command, array $parameters = array()) {
+     public function run($command, array $parameters = array()) {
         
         return $this->command($command);
 

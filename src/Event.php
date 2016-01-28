@@ -161,7 +161,7 @@ class Event
      * @param  string $directory
      * @return Sked\Event
      */
-    public function cd($directory)
+    public function in($directory)
     {
         $this->currentWorkingDirectory = $directory;
 
