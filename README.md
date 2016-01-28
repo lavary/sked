@@ -49,6 +49,7 @@ If your YAML file name is different, you can pass the name as an option to the `
 
 The scheduler scans the respective directory recursively, collects all the task files ending with `Tasks.php` and registers the tasks inside each file. You can define tasks in the same file or across different files and directories based on their usage.
 
+Here's a basic task:
 
 ```php
 <?php
@@ -67,12 +68,15 @@ $schedule->run('cp project project-bk')
 // ...
 
 // You should return the schedule object
+
 return $schedule; 
   
        
 ```
 
-Or:
+**Important:** Please note that you need to return the `Schedule` instance at the end of each task file.
+
+Another example:
 
 ```php
 <?php
@@ -89,6 +93,7 @@ $schedule->run('./deploy.sh')
 // ...
 
 // You should return the Schedule object.
+
 return $scheduler;
 ```
 
@@ -187,7 +192,7 @@ return $schedule;
 
 ## Prevent Task Overlaps
 
-By default, scheduled tasks will be run even if the previous instance of the task is still running. To prevent this, you may use the withoutOverlapping method:
+By default, scheduled tasks will be run even if the previous instance of the task is still running. To prevent this, you may use `withoutOverlapping()` method:
 
 ```php
 <?php
