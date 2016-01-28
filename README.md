@@ -74,7 +74,7 @@ return $schedule;
        
 ```
 
-**Important:** Please note that you need to return the `Schedule` instance at the end of each task file.
+> **Important:** Please note that you need to return the `Schedule` instance at the end of each task file.
 
 Another example:
 
