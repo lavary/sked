@@ -47,10 +47,7 @@ If your YAML file name is different, you can pass the name as an option to the `
 * * * * * path/to/php path/to/your/project/vendor/bin/sked  --configuration-file="/path/to/custom/yaml/file"  >> /dev/null 2>&1
 ``` 
 
-The scheduler scans the respective directory recursively, collects all the task files ending with `Tasks.php` and registers the tasks inside each file. As mentioned earlier, you can categorize the tasks in separate files and sub-directories based on their usage.
-
-> You can define tasks in the same file or across different files.
-
+The scheduler scans the respective directory recursively, collects all the task files ending with `Tasks.php` and registers the tasks inside each file. You can define tasks in the same file or across different files and directories based on their usage.
 
 
 ```php
