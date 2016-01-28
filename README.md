@@ -209,7 +209,7 @@ return $schedule;
 
 ## Handling Output
 
-You save the task output to a file:
+You can save the task output to a file:
 
 ```php
 <?php
@@ -225,7 +225,7 @@ return $schedule;
 
 ```
 
-or append it
+or append it:
 
 ```php
 <?php
