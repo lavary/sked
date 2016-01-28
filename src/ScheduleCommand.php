@@ -44,7 +44,7 @@ class ScheduleCommand {
         
         $finder   = new Finder();
         $iterator = $finder->files()
-                  ->name('*Task.php')
+                  ->name('*Tasks.php')
                   ->in($source);
         
         return $iterator;
