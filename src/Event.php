@@ -253,7 +253,6 @@ class Event
             $command = $this->command . $redirect . $this->output . ' 2>&1 &';
         }
 
-        echo $command;
         return $this->user ? 'sudo -u ' . $this->user . ' ' . $command : $command;
     }
 
