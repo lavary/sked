@@ -281,7 +281,7 @@ class Event
     function isMutexValid()
     {
         $mutexPath = $this->mutexPath();
-        return  (file_exists($mutexPath) && (time() - filemtime($mutexPath) < $this->seconds($this->mutexValidity))) ? true : false;
+        return  (file_exists($mutexPath) && ((time() - filemtime($mutexPath)) < $this->seconds($this->mutexValidity))) ? true : false;
     }
 
 
@@ -890,24 +890,6 @@ class Event
         }
 
         return $this->buildCommand();
-    }
-
-    /**
-     * Get the executed command and its description for display.
-     *
-     * @return string
-     */
-    public function getCommandInfoForDisplay()
-    {
-        $info = '';
-        
-        if (is_string($this->description)) {
-            $info .= $this->description;
-        }
-
-        $info .= ' [ ' . $this->buildCommand() . ' ]';
-
-        return $info;
     }
 
     /**

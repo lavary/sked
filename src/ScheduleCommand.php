@@ -26,9 +26,12 @@ class ScheduleCommand {
             }
 
             $events = $schedule->dueEvents(new Invoker());
-            
             foreach ($events as $event) {
-                echo date('Y-m-d H:i:s'), ' Running scheduled command: ', $event->getCommandInfoForDisplay(), PHP_EOL;
+                
+                echo '[', date('Y-m-d H:i:s'), '] Running scheduled command: ', $event->getSummaryForDisplay(), PHP_EOL;
+                echo $event->buildCommand(), PHP_EOL;
+                echo '---', PHP_EOL;
+                
                 $event->run(new Invoker());
             }
         } 
