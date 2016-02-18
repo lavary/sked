@@ -62,6 +62,13 @@ class Event
     public $withoutOverlapping = false;
 
     /**
+     * The time a Mutex is valid before it's ignored (defaults to one hour)
+     *
+     * @var int|string
+     */
+    public $mutexValidity = 1;
+
+    /**
      * The array of filter callbacks.
      *
      * @var array
@@ -263,8 +270,42 @@ class Event
      */
     protected function mutexPath()
     {
-        return sys_get_temp_dir() . '/schedule-' . md5($this->expression . $this->command);
+        return rtrim(sys_get_temp_dir(), '/') . '/sked-' . md5($this->expression . $this->command);
     }
+
+    /**
+     * Check if Mutex path isn't expired
+     *
+     * @return int
+     */
+    function isMutexValid()
+    {
+        $mutexPath = $this->mutexPath();
+        return  (file_exists($mutexPath) && (time() - filemtime($mutexPath) < $this->seconds($this->mutexValidity))) ? true : false;
+    }
+
+
+    /**
+     * Present a time duration in seconds
+     *
+     * @return int
+     */
+    protected function seconds($duration = null)
+    {
+    
+        if (is_null($duration)) {
+            return null;
+        }
+
+        $duration = array_replace([0, 0, 0], explode(':', $duration));    
+        
+        list($hour, $minute, $second) = array_map(function ($item) {
+            return (int) $item;
+        }, $duration);
+
+        return $hour * 3600 + $minute * 60 + $second;
+    
+    } 
 
     /**
      * Determine if the given event should run based on the Cron expression.
@@ -651,14 +692,19 @@ class Event
     /**
      * Do not allow the event to overlap each other.
      *
+     * @param  string|int $safe_duration
      * @return $this
      */
-    public function withoutOverlapping()
+    public function withoutOverlapping($safe_duration = null)
     {
         $this->withoutOverlapping = true;
 
+        if (!is_null($safe_duration)) {
+            $this->mutexValidity = $safe_duration;
+        }
+
         return $this->skip(function () {
-            return file_exists($this->mutexPath());
+            return $this->isMutexValid();
         });
     }
 

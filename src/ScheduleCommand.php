@@ -19,7 +19,12 @@ class ScheduleCommand {
     
         foreach ($taskFiles as $key => $taskFile) {
                         
-            $schedule = require $taskFile->getRealPath();
+            $schedule = require $taskFile->getRealPath();            
+
+            if( !$schedule instanceof Schedule) {
+                continue;
+            }
+
             $events = $schedule->dueEvents(new Invoker());
             
             foreach ($events as $event) {
@@ -104,6 +109,4 @@ class ScheduleCommand {
         return getopt('c:t:', ['configuration-file', 'tasks']);  
 
      }    
-    
-
 }
