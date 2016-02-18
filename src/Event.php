@@ -893,6 +893,24 @@ class Event
     }
 
     /**
+     * Get the executed command and its description for display.
+     *
+     * @return string
+     */
+    public function getCommandInfoForDisplay()
+    {
+        $info = '';
+        
+        if (is_string($this->description)) {
+            $info .= $this->description;
+        }
+
+        $info .= ' [ ' . $this->buildCommand() . ' ]';
+
+        return $info;
+    }
+
+    /**
      * Get the Cron expression for the event.
      *
      * @return string

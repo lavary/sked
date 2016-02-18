@@ -28,14 +28,9 @@ class ScheduleCommand {
             $events = $schedule->dueEvents(new Invoker());
             
             foreach ($events as $event) {
-                echo 'Running scheduled command: ', $event->getSummaryForDisplay();
+                echo date('Y-m-d H:i:s'), ' Running scheduled command: ', $event->getCommandInfoForDisplay(), PHP_EOL;
                 $event->run(new Invoker());
             }
-
-            if (count($events) === 0) {
-                echo 'No scheduled commands are ready to run.';
-            }
-
         } 
     }    
 
