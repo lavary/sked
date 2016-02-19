@@ -48,7 +48,7 @@ $schedule = new Schedule();
 $schedule->run('cp project project-bk')       
          ->everyMinute()
          ->description('Copying the project directory')
-         ->appendOutputTo('/Users/lavary/www/sammi.log');
+         ->appendOutputTo('/var/log/backup.log');
 
 // ...
 
