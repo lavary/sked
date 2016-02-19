@@ -318,6 +318,24 @@ return $schedule;
 
 ```
 
+## Ping a URL
+
+You can also ping a url before and after a task is executed:
+
+```php
+<?php
+
+// ...
+
+$shcedule->run('./back.sh')
+         ->beforePing('uri-to-ping-before')
+         ->thenPing('uri-to-ping-after');
+// ...
+
+return $schedule;
+
+```
+
 ## If You Need Help
 
 Please submit all issues and questions using GitHub issues and I will try to help you.
