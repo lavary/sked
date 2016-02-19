@@ -20,9 +20,9 @@ composer require lavary\sked
 
 ## Starting the Scheduler
 
-After the package is installed, command `sked` is symlinked to the `vendor/bin` directory. You may create a symlink of the file in `/usr/bin` directory, to have access to it from anywhere.
+After the package is installed, command `sked` is symlinked to the `vendor/bin` directory of your project. You may create a symlink of the file in `/usr/bin` directory, to have access to it from anywhere.
 
-This is the only cron you need to install at server level, which runs every minute and delegates responsibility to the scheduler service (however you can change the frequency if you know what you're doing).
+This is the only cron you need to install at server level, running  every minute and delegates responsibility to the scheduler service.
 
 So the server-level cron job could be as following:
 
@@ -30,26 +30,9 @@ So the server-level cron job could be as following:
 * * * * * path/to/php path/to/your/project/vendor/bin/sked  >> /dev/null 2>&1
 ``` 
 
+Please note that the **one minute frequency** is essential for the master cron job. Sked is using [Cron Expression](https://github.com/mtdowling/cron-expression) library, which relies on a master cronjob running every minute.
+
 ## Usage
-
-All tasks should be defined in files with a name ending with `Tasks.php`, as an example: `adminstrativeTasks.php`. To run the tasks, you need to make sure Sked is aware of the task's location. By default Sked assume all the tasks reside in `Tasks` directory, in your project's root directory.
-
-But if you need to have your tasks in another localtion, you need to create a YAML file named `sked.yml` in your project's root directory and put your tasks's location in place - in front of `src` key:
-
-**sked.yml**
-```
-src: '/absolute/path/to/your/tasks/directory'
-```
-
-Please note that you need to modify the above path based on your project structure.
-
-If your YAML file name is different, you can pass the name as an option to the `sked` command - when you're installing the cron:
-
-```
-* * * * * path/to/php path/to/your/project/vendor/bin/sked  --configuration-file="/path/to/custom/yaml/file"  >> /dev/null 2>&1
-``` 
-
-The scheduler scans the respective directory recursively, collects all the task files ending with `Tasks.php` and registers the tasks inside each file. You can define tasks in the same file or across different files and directories based on their usage.
 
 Here's a basic task:
 
@@ -78,7 +61,28 @@ return $schedule;
 
 > **Important:** Please note that you need to return the `Schedule` instance at the end of each task file.
 
-Another example:
+All tasks should be defined in files with a name ending with `Tasks.php` in your project, for instance: `adminstrativeTasks.php`. 
+
+To run the tasks, you need to make sure Sked is aware of the task's location. By default Sked assume all the tasks reside in `Tasks` directory, in your project's root directory.
+
+The scheduler scans the respective directory recursively, collects all the task files ending with `Tasks.php` and registers the tasks inside each file. You can define tasks in the same file or across different files and directories based on their usage.
+
+If you need to have your tasks in another location other than the default one, you should create a YAML file, named `sked.yml` in your project's root directory, and put your tasks's location in place - in front of `src` key:
+
+**sked.yml**
+```
+src: '/absolute/path/to/your/tasks/directory'
+```
+
+Please note that you need to modify the above path based on your project structure.
+
+If your YAML file name is different than `sked.log`, you may pass the name as an option to the `sked` command - when you're installing the master cron:
+
+```
+* * * * * path/to/php path/to/your/project/vendor/bin/sked  --configuration-file="/path/to/custom/yaml/file"  >> /dev/null 2>&1
+``` 
+
+Here's another example:
 
 ```php
 <?php
@@ -209,7 +213,7 @@ return $schedule;
 
 ```
 
-The locking mechanism is performed in the file level. However, there are situations (for instance on system failure) when the lock file isn't released after the task execution is completed. To prevent such deadlocks, Sked ignores the lock if the file creation time is more than one hour. You can change this value by passing the lock validity duration to the `withoutOverlapping()` method:
+The locking mechanism is performed in the OS file level. However, there are situations (for instance on system failure) when the lock file isn't released after the task execution is completed. To prevent such deadlocks, Sked ignores the lock if the file creation time is older than one hour. You can change this value by passing the lock validity duration to the `withoutOverlapping()` method:
 
 ```php
 <?php
@@ -277,7 +281,7 @@ return $schedule;
 
 ## Changing Directories
 
-You can use the `in()` method to change directory before running a command:
+You may use the `in()` method to change directory before running a command:
 
 ```php
 <?php
@@ -299,7 +303,7 @@ return $schedule;
 
 ## Hooks
 
-You can call a set of callbacks before and after  the command is run:
+You can call a set of callbacks before and after the command is run:
 
 ```php
 <?php
@@ -319,6 +323,8 @@ $shcedule->run('./back.sh')
 return $schedule;
 
 ```
+
+One use case would be sending an email after the command is executed. You may put the logic inside an `after` callback.
 
 ## Ping a URL
 
