@@ -22,7 +22,7 @@ composer require lavary\sked
 
 After the package is installed, command `sked` is symlinked to the `vendor/bin` directory of your project. You may create a symlink of the file in `/usr/bin` directory, to have access to it from anywhere.
 
-This is the only cron you need to install at server level, running  every minute and delegates responsibility to the scheduler service.
+This is the only cron you need to install at server level, which runs every minute delegating the responsibility to the scheduler service.
 
 So the server-level cron job could be as following:
 
