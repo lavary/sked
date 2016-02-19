@@ -192,7 +192,7 @@ return $schedule;
 
 ## Prevent Task Overlaps
 
-By default, scheduled tasks will be run even if the previous instance of the task is still running. To prevent this, you may use `withoutOverlapping()` method:
+By default, scheduled tasks will be run even if the previous instance of the task is still running. To prevent this, you may use `withoutOverlapping()` method to avoid task overlaps.
 
 ```php
 <?php
@@ -206,6 +206,38 @@ $schedule->run('./backup.sh')->withoutOverlapping();
 return $schedule;
 
 ```
+
+The locking mechanism is performed in the file level. However, there are situations(for instance on system failure) when the lock file isn't released after the task execution is completed. To prevent such deadlocks, Sked ignores the lock if the file creation time is more than one hour. You can change this value by passing the lock validity duration to the `withoutOverlapping()` method:
+
+```php
+<?php
+
+// ...
+
+$schedule->run('./backup.sh')->withoutOverlapping('00:15');
+
+// ...
+
+return $schedule;
+```
+
+In the above snippet, If the lock is not released for any reasons, it will be force-released after 15 minutes.
+
+If you pass an interger value, it is considered as hour:
+
+```php
+<?php
+
+// ...
+
+$schedule->run('./backup.sh')->withoutOverlapping(2);
+
+// ...
+
+return $scheduler;
+```
+
+In the above example, the lock is force released after two hours.
 
 ## Handling Output
 
