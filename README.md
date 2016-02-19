@@ -65,7 +65,7 @@ All tasks should be defined in files with a name ending with `Tasks.php` in your
 
 To run the tasks, you need to make sure Sked is aware of the task's location. By default Sked assume all the tasks reside in `Tasks` directory, in your project's root directory.
 
-The scheduler scans the respective directory recursively, collects all the task files ending with `Tasks.php` and registers the tasks inside each file. You can define tasks in the same file or across different files and directories based on their usage.
+The scheduler scans the respective directory recursively, collects all the task files ending with `Tasks.php`, and registers the tasks inside each file. You can define tasks in the same file or across different files and directories based on their usage.
 
 If you need to have your tasks in another location other than the default one, you should create a YAML file, named `sked.yml` in your project's root directory, and put your tasks's location in place - in front of `src` key:
 
