@@ -4,7 +4,7 @@ Create just one cron job once and for all, manage the rest right from the code.
 
 [![Latest Unstable Version](https://poser.pugx.org/lavary/sked/v/unstable.svg)](https://packagist.org/packages/lavary/sked)
 
-Sked is a framework-agnostic package for creating cron jobs using a fluent API. It's been built on top of the powerful [Laravel task scheduler](https://laravel.com/docs/master/scheduling) and [] but the effort has been made to make Laravel Task Scheduler available to other environments and contexts, while providing additional features.
+Sked is a framework-agnostic package for creating cron jobs using a fluent API. It's been built on top of the powerful [Laravel task scheduler](https://laravel.com/docs/master/scheduling) but the effort has been made to make it available to other environments and contexts, while providing additional features.
 
 Sked is wirtten in PHP but can be used for any kind of console commands and bash scripts.
 
