@@ -159,6 +159,28 @@ Here's the list of constraints you can use with the above frequency methods:
 | when(Closure) | Limit the task based on a truth test |
 ```
 
+## Schedule a Task to Run Only Once 
+
+You can schedule a task ro run once on certain date using `on()` method:
+
+```php
+<?php
+// ...
+$schedule->run('./backup.sh')
+         ->on('2016-02-21');
+// ...
+```
+
+You can also add the time using `at()` method:
+
+```php
+<?php
+// ...
+$schedule->run('./backup.sh')
+         ->on('2016-02-21')
+         ->at('03:45');
+// ...
+```
 
 ## Schedule Under Certain Conditions
 
