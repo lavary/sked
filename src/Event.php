@@ -437,6 +437,24 @@ class Event
     }
 
     /**
+     * Schedule the event to run on a certain date
+     *
+     * @param  string  $date
+     * @return $this
+     */
+    public function on($date)
+    {
+        $segments = explode('-', $date);
+
+        $this->skip(function () use ($segments) {
+            return (int) date('Y') != $segments[0];
+        });
+        
+        return $this->spliceIntoPosition(4, (int) $segments[1])
+                    ->spliceIntoPosition(3, (int) $segments[2]);
+    }
+
+    /**
      * Schedule the event to run twice daily.
      *
      * @param  int  $first

@@ -2,6 +2,8 @@
 
 namespace Sked;
 
+use Symfony\Component\Process\ProcessUtils;
+
 class Schedule
 {
     /**
@@ -20,7 +22,7 @@ class Schedule
      */
      public function run($command, array $parameters = array()) {
         
-        return $this->command($command);
+        return $this->command($command, $parameters);
 
      }    
 
@@ -47,7 +49,7 @@ class Schedule
     public function exec($command, array $parameters = [])
     {
         if (count($parameters)) {
-            $command .= ' '.$this->compileParameters($parameters);
+            $command .= ' ' . $this->compileParameters($parameters);
         }
 
         $this->events[] = $event = new Event($command);
@@ -64,7 +66,7 @@ class Schedule
     protected function compileParameters(array $parameters)
     {
         return collect($parameters)->map(function ($value, $key) {
-            return is_numeric($key) ? $value : $key.'='.(is_numeric($value) ? $value : ProcessUtils::escapeArgument($value));
+            return is_numeric($key) ? $value : $key . '=' . (is_numeric($value) ? $value : ProcessUtils::escapeArgument($value));
         })->implode(' ');
     }
 
