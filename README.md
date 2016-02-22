@@ -8,7 +8,7 @@ Sked is a framework-agnostic library for creating cron jobs using a fluent API. 
 
 > Some parts of this documentation is from Laravel's Task Scheduler documentation.
 
-Sked is wirtten in PHP but can be used for any kind of console commands and bash scripts.
+Sked is wirtten in PHP but it can execute console commands, shell scripts and even PHP callables.
 
 ## Installation
 
