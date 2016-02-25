@@ -67,19 +67,11 @@ To run the tasks, you need to make sure Sked is aware of the task's location. By
 
 The scheduler scans the respective directory recursively, collects all the task files ending with `Tasks.php`, and registers the tasks inside each file. You can define tasks in the same file or across different files and directories based on their usage.
 
-If you need to have your tasks in another location other than the default one, you can pass the directory using the `--source` option of `schedule:run` command - when installing the master cron:
+If you need to keep your task files in another location other than the default one, you may define the source path using the `--source` option - when installing the master cron:
 
 ```bash
-* * * * * path/to/php path/to/your/project/vendor/bin/sked schedule:run --source=full/path/to/the/Tasks/directory  >> /dev/null 2>&1
+* * * * * path/to/php path/to/your/project/vendor/bin/sked schedule:run --source=/path/to/the/Tasks/directory  >> /dev/null 2>&1
 ```
-
-Please note that you need to modify the above path based on your project structure.
-
-If your YAML file name is different than `sked.log`, you may pass the name as an option to the `sked` command - when you're installing the master cron:
-
-```
-* * * * * path/to/php path/to/your/project/vendor/bin/sked    >> /dev/null 2>&1
-``` 
 
 Here's another example:
 
@@ -114,13 +106,18 @@ path/to/your/project/vendor/bin/sked make:task TaskFileName --frequency=everyFiv
 
 As a result, a file named `TaskFileNameTasks.php` will be generated in your `Tasks` directory.
 
+You can also soecify the output destination path using the `output` option:
+
+```bash
+path/to/your/project/vendor/bin/sked make:task TaskFileName --frequency=everyFiveMinutes --constraint=weekdays --output="path/to/Tasks/directory"
+```
+
+
 You may use the `--help` option to see the list of available arguments and options along with their default values:
 
 ```bash
 path/to/your/project/vendor/bin/sked --help
-``
-
-You can also soecify the output destination path using the ``
+```
 
 ## Scheduling Frequency and Constraints
 
