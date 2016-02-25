@@ -206,8 +206,8 @@ You can also set an active duration for your task, so regardless of the frequenc
 <?php
 $schedule->run('./backup.sh')
          ->everyFiveMinutes()
-         ->wakeUp('2016-02-25 12:35')
-         ->until('2016-02-26 12:35');
+         ->wakeUpAt('2016-02-25 12:35')
+         ->sleepAt('2016-02-26 12:35');
 
 ```
 
