@@ -26,8 +26,8 @@ This is the only cron you need to install at server level, which runs every minu
 
 So the server-level cron job could be as following:
 
-```
-* * * * * path/to/php path/to/your/project/vendor/bin/sked  >> /dev/null 2>&1
+```bash
+* * * * * path/to/php path/to/your/project/vendor/bin/sked schedule:run  >> /dev/null 2>&1
 ``` 
 
 Please note that the **one minute frequency** is essential for the master cron job. Sked is using [Cron Expression](https://github.com/mtdowling/cron-expression) library, which relies on a master cronjob running every minute.
@@ -67,11 +67,10 @@ To run the tasks, you need to make sure Sked is aware of the task's location. By
 
 The scheduler scans the respective directory recursively, collects all the task files ending with `Tasks.php`, and registers the tasks inside each file. You can define tasks in the same file or across different files and directories based on their usage.
 
-If you need to have your tasks in another location other than the default one, you should create a YAML file, named `sked.yml` in your project's root directory, and put your tasks's location in place - in front of `src` key:
+If you need to have your tasks in another location other than the default one, you can pass the directory using the `--source` option of `schedule:run` command - when installing the master cron:
 
-**sked.yml**
-```
-src: '/absolute/path/to/your/tasks/directory'
+```bash
+* * * * * path/to/php path/to/your/project/vendor/bin/sked schedule:run --source=full/path/to/the/Tasks/directory  >> /dev/null 2>&1
 ```
 
 Please note that you need to modify the above path based on your project structure.
@@ -79,7 +78,7 @@ Please note that you need to modify the above path based on your project structu
 If your YAML file name is different than `sked.log`, you may pass the name as an option to the `sked` command - when you're installing the master cron:
 
 ```
-* * * * * path/to/php path/to/your/project/vendor/bin/sked  --configuration-file="/path/to/custom/yaml/file"  >> /dev/null 2>&1
+* * * * * path/to/php path/to/your/project/vendor/bin/sked    >> /dev/null 2>&1
 ``` 
 
 Here's another example:
@@ -102,6 +101,26 @@ $schedule->run('./deploy.sh')
 
 return $scheduler;
 ```
+
+## Generating Task Files Using the Task Generator
+
+You can use the command line utility shipped with Sked to generate a task file and save some time. You may then edit the file based on your requirements.
+
+To create task file run the following command in your terminal:
+
+```bash
+path/to/your/project/vendor/bin/sked make:task TaskFileName --frequency=everyFiveMinutes --constraint=weekdays
+```
+
+As a result, a file named `TaskFileNameTasks.php` will be generated in your `Tasks` directory.
+
+You may use the `--help` option to see the list of available arguments and options along with their default values:
+
+```bash
+path/to/your/project/vendor/bin/sked --help
+``
+
+You can also soecify the output destination path using the ``
 
 ## Scheduling Frequency and Constraints
 
