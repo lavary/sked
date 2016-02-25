@@ -198,6 +198,31 @@ $schedule->run('./backup.sh')
 // ...
 ```
 
+## Wake Up and Sleep Time 
+
+You can also set an active duration for your task, so regardless of the frequency they will be turned off and on at certain times in the day or a period of time.
+
+```php
+<?php
+$schedule->run('./backup.sh')
+         ->everyFiveMinutes()
+         ->wakeUp('2016-02-25 12:35')
+         ->until('2016-02-26 12:35');
+
+```
+
+The above task will be run every five minutes from `2016-02-25 12:35` until `2016-02-26 12:35`.
+
+You can also use the `lifetime()` method to do the same thing:
+
+```php
+<?php
+$schedule->run('./backup.sh')
+         ->everyFiveMinutes()
+         ->lifetime('2016-02-25 12:35', '2016-02-26 12:35');
+
+```
+
 ## Schedule Under Certain Conditions
 
 You can run or skip a schedule based on a certain condition.
