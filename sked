@@ -1,14 +1,19 @@
 #!/usr/bin/env php
 <?php
-/*
- * This file is part of Sked package
- *
- * (c) Reza Lavaryan <mrl.8081@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
+/*
+|--------------------------------------------------------------------------
+| Sked
+|--------------------------------------------------------------------------
+|
+| This file is part of Sked package
+| (c) Reza Lavaryan <mrl.8081@gmail.com>
+| For the full copyright and license information, please view the LICENSE
+| This file that was distributed with this source code.
+|
+*/
+
+use Sked\Console\CommandKernel;
 
 foreach ([__DIR__ . '/../autoload.php', __DIR__ . '/../../autoload.php', __DIR__ . '/../vendor/autoload.php', __DIR__ . '/vendor/autoload.php', __DIR__ . '/../../vendor/autoload.php'] as $file) {
     if (file_exists($file)) {
@@ -29,4 +34,5 @@ if (!defined('AUTOLOAD_PHP_FILE')) {
 
 require AUTOLOAD_PHP_FILE;
 
-\Sked\ScheduleCommand::run();
+$kernel = new CommandKernel('Sked Command Line Interface', '1.2.0');
+$kernel->handle();

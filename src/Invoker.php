@@ -2,7 +2,8 @@
 
 namespace Sked;
 
-class Invoker {
+class Invoker
+{
     
     /**
      * Call the given Closure

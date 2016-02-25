@@ -20,10 +20,9 @@ class Schedule
      * @param  array  $parameters
      * @return \Sked\Event
      */
-     public function run($command, array $parameters = array()) {
-        
+     public function run($command, array $parameters = array())
+     {   
         return $this->command($command, $parameters);
-
      }    
 
     /**

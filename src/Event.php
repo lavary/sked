@@ -187,7 +187,9 @@ class Event
             return chdir(__DIR__ . '/../../../../');
         }
 
-        chdir($directory);
+        if (file_exists($directory)) {
+            chdir($directory);
+        }
     }
 
     /**
@@ -412,6 +414,24 @@ class Event
     }
 
     /**
+     * Schedule the event to run on a certain date
+     *
+     * @param  string  $date
+     * @return $this
+     */
+    public function on($date)
+    {
+        $segments = explode('-', $date);
+
+        $this->skip(function () use ($segments) {
+            return (int) date('Y') != $segments[0];
+        });
+        
+        return $this->spliceIntoPosition(4, (int) $segments[1])
+                    ->spliceIntoPosition(3, (int) $segments[2]);
+    }
+
+    /**
      * Schedule the command at a given time.
      *
      * @param  string  $time
@@ -437,22 +457,67 @@ class Event
     }
 
     /**
-     * Schedule the event to run on a certain date
+     * Set Working period
      *
-     * @param  string  $date
-     * @return $this
      */
-    public function on($date)
+    public function lifetime($from, $to)
     {
-        $segments = explode('-', $date);
-
-        $this->skip(function () use ($segments) {
-            return (int) date('Y') != $segments[0];
-        });
+        $this->wakeUpAt($from)
+             ->sleepAt($to);    
         
-        return $this->spliceIntoPosition(4, (int) $segments[1])
-                    ->spliceIntoPosition(3, (int) $segments[2]);
+        return $this;
     }
+    
+    /**
+     * Check if event should be on
+     *
+     * @param  string  $datetime
+     */
+     public function wakeUpAt($datetime)
+     { 
+        $this->skip(function() use ($datetime) {
+            return $this->notYet($datetime);
+        });
+
+        return $this;
+     }
+
+     /**
+     * Check if event should be off
+     *
+     * @param  string  $datetime
+     * @return boolean
+     */
+     public function sleepAt($datetime)
+     {          
+        $this->skip(function() use ($datetime) {
+            return $this->past($datetime);
+        });
+
+        return $this;
+     }
+
+    /**
+     * Check if time hasn't arrived
+     *
+     * @param  string  $time
+     * @return boolean
+     */
+     protected function notyet($datetime)
+     {  
+        return time() < strtotime($datetime);
+     }
+
+    /**
+     * Check if the time has passed
+     *
+     * @param  string $time
+     * @return boolean
+     */
+     protected function past($datetime)
+     {
+        return time() > strtotime($datetime);
+     }
 
     /**
      * Schedule the event to run twice daily.
@@ -610,7 +675,7 @@ class Event
      */
     public function everyMinute()
     {
-        return $this->cron('* * * * * *');
+            return $this->cron('* * * * * *');
     }
 
     /**
