@@ -6,7 +6,7 @@ Create just one cron job once and for all, manage the rest right from the code.
 
 Sked is a framework-agnostic package for creating cron jobs using a fluent API. It's been built on top of the powerful [Laravel task scheduler](https://laravel.com/docs/master/scheduling), but the effort has been made to make Laravel Task Scheduler available to other environments and contexts, while providing additional features.
 
-Sked is wirtten in PHP but can be used for any kind of console commands and bash scripts.
+Sked is wirtten in PHP but it can execute console commands, shell scripts and even PHP callables.
 
 ## Installation
 
@@ -24,8 +24,8 @@ This is the only cron you need to install at server level, which runs every minu
 
 So the server-level cron job could be as following:
 
-```
-* * * * * path/to/php path/to/your/project/vendor/bin/sked  >> /dev/null 2>&1
+```bash
+* * * * * path/to/php path/to/your/project/vendor/bin/sked schedule:run  >> /dev/null 2>&1
 ``` 
 
 ## Usage
@@ -76,7 +76,20 @@ return $schedule;
 
 > **Important:** Please note that you need to return the `Schedule` instance at the end of each task file.
 
-Another example:
+
+All tasks should be defined in files with a name ending with `Tasks.php` in your project, for instance: `adminstrativeTasks.php`. 
+
+To run the tasks, you need to make sure Sked is aware of the task's location. By default Sked assume all the tasks reside in `Tasks` directory, in your project's root directory.
+
+The scheduler scans the respective directory recursively, collects all the task files ending with `Tasks.php`, and registers the tasks inside each file. You can define tasks in the same file or across different files and directories based on their usage.
+
+If you need to keep your task files in another location other than the default one, you may define the source path using the `--source` option - when installing the master cron:
+
+```bash
+* * * * * path/to/php path/to/your/project/vendor/bin/sked schedule:run --source=/path/to/the/Tasks/directory  >> /dev/null 2>&1
+```
+
+Here's another example:
 
 ```php
 <?php
@@ -95,6 +108,31 @@ $schedule->run('./deploy.sh')
 // You should return the Schedule object.
 
 return $scheduler;
+```
+
+## Generating Task Files Using the Task Generator
+
+You can use the command line utility shipped with Sked to generate a task file and save some time. You may then edit the file based on your requirements.
+
+To create task file run the following command in your terminal:
+
+```bash
+path/to/your/project/vendor/bin/sked make:task TaskFileName --frequency=everyFiveMinutes --constraint=weekdays
+```
+
+As a result, a file named `TaskFileNameTasks.php` will be generated in your `Tasks` directory.
+
+You can also soecify the output destination path using the `output` option:
+
+```bash
+path/to/your/project/vendor/bin/sked make:task TaskFileName --frequency=everyFiveMinutes --constraint=weekdays --output="path/to/Tasks/directory"
+```
+
+
+You may use the `--help` option to see the list of available arguments and options along with their default values:
+
+```bash
+path/to/your/project/vendor/bin/sked --help
 ```
 
 ## Scheduling Frequency and Constraints
@@ -153,6 +191,53 @@ Here's the list of constraints you can use with the above frequency methods:
 | when(Closure) | Limit the task based on a truth test |
 ```
 
+## Schedule a Task to Run Only Once 
+
+You can schedule a task ro run once on certain date using `on()` method:
+
+```php
+<?php
+// ...
+$schedule->run('./backup.sh')
+         ->on('2016-02-21');
+// ...
+```
+
+You can also add the time using `at()` method:
+
+```php
+<?php
+// ...
+$schedule->run('./backup.sh')
+         ->on('2016-02-21')
+         ->at('03:45');
+// ...
+```
+
+## Wake Up and Sleep Time 
+
+You can also set an active duration for your task, so regardless of the frequency they will be turned off and on at certain times in the day or a period of time.
+
+```php
+<?php
+$schedule->run('./backup.sh')
+         ->everyFiveMinutes()
+         ->wakeUpAt('2016-02-25 12:35')
+         ->sleepAt('2016-02-26 12:35');
+
+```
+
+The above task will be run every five minutes from `2016-02-25 12:35` until `2016-02-26 12:35`.
+
+You can also use the `lifetime()` method to do the same thing:
+
+```php
+<?php
+$schedule->run('./backup.sh')
+         ->everyFiveMinutes()
+         ->lifetime('2016-02-25 12:35', '2016-02-26 12:35');
+
+```
 
 ## Schedule Under Certain Conditions
 
