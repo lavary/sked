@@ -4,9 +4,12 @@ Create just one cron job once and for all, manage the rest right from the code.
 
 [![Latest Unstable Version](https://poser.pugx.org/lavary/sked/v/unstable.svg)](https://packagist.org/packages/lavary/sked)
 
-Sked is a framework-agnostic package for creating cron jobs using a fluent API. It's been built on top of the powerful [Laravel task scheduler](https://laravel.com/docs/master/scheduling), but the effort has been made to make it available to other environments and contexts, while providing additional features.
+Sked is a framework-agnostic package to schedule periodic tasks (cronjobs) in the PHP evironment, using a fluent API.
+Sked is the improved version of the powerful [Laravel task scheduler](https://laravel.com/docs/master/scheduling).
 
 Sked is wirtten in PHP but it can execute console commands, shell scripts or PHP CLI scripts.
+
+The idea is quite simple, we create our tasks using `Schedule` as `.php` files in the `Tasks/` directory within our project's root directory. Then we run the command which is shipped with Sked. We'll get to it in a moment.
 
 ## Installation
 
@@ -18,11 +21,11 @@ composer require lavary\sked
 
 ## Starting the Scheduler
 
-After the package is installed, command `sked` is symlinked to the `vendor/bin` directory. You may create a symlink of the file in `/usr/bin` directory, to have access to it from anywhere.
+After the package is installed, a PHP CLI script named `sked` is symlinked to the `vendor/bin` directory. You may create a symlink of this file in `/usr/bin` directory, to have access to it from anywhere.
 
-This is the only cronjob you need to install at server level, which runs every minute and delegates responsibility to the scheduler service.
+This is the only cronjob you need to install at server level. It runs every minute and delegates the responsibility to the scheduler service. The `Schedule` class evaluates the tasks (in `Tasks/` directory) and run the tasks which are due.
 
-So the server-level cron job could be as following:
+The server-level cron job could be as following:
 
 ```bash
 * * * * * path/to/php path/to/your/project/vendor/bin/sked schedule:run  >> /dev/null 2>&1
@@ -30,7 +33,7 @@ So the server-level cron job could be as following:
 
 ## Usage
 
-Here's a basic task:
+Let's create a basic task:
 
 ```php
 <?php
@@ -67,19 +70,6 @@ The scheduler scans the respective directory recursively, collects all the task 
  
  ```bash
  +* * * * * path/to/php path/to/your/project/vendor/bin/sked schedule:run --source=/path/to/the/Tasks/directory  >> /dev/null 2>&1
-```
-
-
-All tasks should be defined in files with a name ending with `Tasks.php` in your project, for instance: `adminstrativeTasks.php`. 
-
-To run the tasks, you need to make sure Sked is aware of the task's location. By default Sked assume all the tasks reside in `Tasks` directory, in your project's root directory.
-
-The scheduler scans the respective directory recursively, collects all the task files ending with `Tasks.php`, and registers the tasks inside each file. You can define tasks in the same file or across different files and directories based on their usage.
-
-If you need to keep your task files in another location other than the default one, you may define the source path using the `--source` option - when installing the master cron:
-
-```bash
-* * * * * path/to/php path/to/your/project/vendor/bin/sked schedule:run --source=/path/to/the/Tasks/directory  >> /dev/null 2>&1
 ```
 
 Here's another example:
