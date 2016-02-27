@@ -9,8 +9,6 @@ Sked is the improved version of the powerful [Laravel task scheduler](https://la
 
 Sked is wirtten in PHP but it can execute console commands, shell scripts or PHP CLI scripts.
 
-The idea is quite simple, we create our tasks using `Schedule` as `.php` files in the `Tasks/` directory within our project's root directory. Then we run the command which is shipped with Sked. We'll get to it in a moment.
-
 ## Installation
 
 To install the package, run the following command:
