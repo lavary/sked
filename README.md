@@ -62,7 +62,7 @@ All tasks should be defined in files with the name ending with `Tasks.php` in yo
 
 To run the tasks, you need to make sure Sked is aware of the tasks' location. By default it assumes all the tasks files reside in `Tasks` directory within your project's root directory.
 
-The scheduler scans the respective directory recursively, collects all the task files ending with `Tasks.php`, and registers them the Sked's `Schedule` class. You can define tasks in the one file or across different files and directories based on their usage.
+The scheduler scans the respective directory recursively, collects all the task files ending with `Tasks.php`, and registers them the with Sked's `Schedule` class. You can define tasks in the one file or across different files and directories based on their usage.
  
  If you need to keep your task files in another location other than the default one, you may define the source path using the `--source` option - when installing the master cron:
  
