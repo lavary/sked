@@ -273,7 +273,7 @@ return $schedule;
 
 ```
 
-The locking mechanism is performed in the OS file level. However, there are situations (for instance on system failure) when the lock file isn't released after the task execution is completed. To prevent such deadlocks, Sked ignores the lock if the file creation time is older than one hour. You can change this value by passing the lock validity duration to the `withoutOverlapping()` method:
+The locking mechanism is performed in the OS file level. However, there are situations (for instance on system failure) when the lock file isn't released after the task execution is completed. To prevent such deadlocks, Sked ignores the lock if the lock creation time is older than an hour. You can change this value by passing the lock validity duration to the `withoutOverlapping()` method:
 
 ```php
 <?php
