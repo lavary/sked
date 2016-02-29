@@ -68,7 +68,7 @@ class TaskGeneratorCommand extends Command
                 new InputOption('run',          'r',  InputOption::VALUE_OPTIONAL,   'The task\'s command',     array_get($this->defaults, 'run')),
                 new InputOption('description',  'd',  InputOption::VALUE_OPTIONAL,   'The task\'s description', array_get($this->defaults, 'description')),
                 new InputOption('type',         't',  InputOption::VALUE_OPTIONAL,   'The task type',           array_get($this->defaults, 'type')),
-                new InputOption('output',       'o',  InputOption::VALUE_OPTIONAL,   'The output file path',    __DIR___ . '/' . array_get($this->defaults, 'output')),
+                new InputOption('output',       'o',  InputOption::VALUE_OPTIONAL,   'The output file path',    __DIR__ . '/' . array_get($this->defaults, 'output')),
 
             ])
             ->setHelp('This command makes a task stub for you to work on');
