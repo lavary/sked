@@ -35,7 +35,7 @@ class ScheduleRunCommand extends Command
      */
     protected $defaults = [
 
-        'src' => __DIR__ . '/../../../../../../Tasks',
+        'src' => '/../../../../../../Tasks',
     ];
 
     /**
@@ -47,7 +47,7 @@ class ScheduleRunCommand extends Command
         $this->setName('schedule:run')
              ->setDescription('Start the scheduler')
              ->setDefinition([
-                new InputOption('source', 's', InputOption::VALUE_OPTIONAL, 'Path to the task files', array_get($this->defaults, 'src')),
+                new InputOption('source', 's', InputOption::VALUE_OPTIONAL, 'Path to the task files',  __DIR__ . array_get($this->defaults, 'src')),
             ])
              ->setHelp('This command starts the scheduler');
      } 
