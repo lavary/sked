@@ -4,9 +4,10 @@ Create just one cron job once and for all, manage the rest right from the code.
 
 [![Latest Unstable Version](https://poser.pugx.org/lavary/sked/v/unstable.svg)](https://packagist.org/packages/lavary/sked)
 
-Sked is a framework-agnostic package for creating cron jobs using a fluent API. It's been built on top of the powerful [Laravel task scheduler](https://laravel.com/docs/master/scheduling), but the effort has been made to make Laravel Task Scheduler available to other environments and contexts, while providing additional features.
+Sked is a framework-agnostic package to schedule periodic tasks (cronjobs) in the PHP evironment, using a fluent API.
+Sked is the improved version of the powerful [Laravel task scheduler](https://laravel.com/docs/master/scheduling).
 
-Sked is wirtten in PHP but it can execute console commands, shell scripts and even PHP callables.
+Sked is wirtten in PHP but it can execute console commands, shell scripts or PHP CLI scripts.
 
 ## Installation
 
@@ -18,11 +19,11 @@ composer require lavary\sked
 
 ## Starting the Scheduler
 
-After the package is installed, command `sked` is symlinked to the `vendor/bin` directory. You may create a symlink of the file in `/usr/bin` directory, to have access to it from anywhere.
+After the package is installed, a PHP CLI script named `sked` is symlinked to the `vendor/bin` directory. You may create a symlink of this file in `/usr/bin` directory, to have access to it from anywhere.
 
-This is the only cron you need to install at server level, which runs every minute and delegates responsibility to the scheduler service (however you can change the frequency if you know what you're doing).
+This is the only cronjob you need to install at server level. It runs every minute and delegates the responsibility to the scheduler service. The `Schedule` class evaluates the tasks (in `Tasks/` directory) and run the tasks which are due.
 
-So the server-level cron job could be as following:
+The server-level cron job could be as following:
 
 ```bash
 * * * * * path/to/php path/to/your/project/vendor/bin/sked schedule:run  >> /dev/null 2>&1
@@ -30,26 +31,7 @@ So the server-level cron job could be as following:
 
 ## Usage
 
-All tasks should be defined in files with a name ending with `Tasks.php`, as an example: `adminstrativeTasks.php`. To run the tasks, you need to make sure Sked is aware of the task's location. By default Sked assume all the tasks reside in `Tasks` directory, in your project's root directory.
-
-But if you need to have your tasks in another localtion, you need to create a YAML file named `sked.yml` in your project's root directory and put your tasks's location in place - in front of `src` key:
-
-**sked.yml**
-```
-src: '/absolute/path/to/your/tasks/directory'
-```
-
-Please note that you need to modify the above path based on your project structure.
-
-If your YAML file name is different, you can pass the name as an option to the `sked` command - when you're installing the cron:
-
-```
-* * * * * path/to/php path/to/your/project/vendor/bin/sked  --configuration-file="/path/to/custom/yaml/file"  >> /dev/null 2>&1
-``` 
-
-The scheduler scans the respective directory recursively, collects all the task files ending with `Tasks.php` and registers the tasks inside each file. You can define tasks in the same file or across different files and directories based on their usage.
-
-Here's a basic task:
+Let's create a basic task:
 
 ```php
 <?php
@@ -76,17 +58,16 @@ return $schedule;
 
 > **Important:** Please note that you need to return the `Schedule` instance at the end of each task file.
 
+All tasks should be defined in files with the name ending with `Tasks.php` in your project's directory, for instance: `adminstrativeTasks.php`. 
 
-All tasks should be defined in files with a name ending with `Tasks.php` in your project, for instance: `adminstrativeTasks.php`. 
+To run the tasks, you need to make sure Sked is aware of the tasks' location. By default it assumes all the tasks files reside in `Tasks` directory within your project's root directory.
 
-To run the tasks, you need to make sure Sked is aware of the task's location. By default Sked assume all the tasks reside in `Tasks` directory, in your project's root directory.
-
-The scheduler scans the respective directory recursively, collects all the task files ending with `Tasks.php`, and registers the tasks inside each file. You can define tasks in the same file or across different files and directories based on their usage.
-
-If you need to keep your task files in another location other than the default one, you may define the source path using the `--source` option - when installing the master cron:
-
-```bash
-* * * * * path/to/php path/to/your/project/vendor/bin/sked schedule:run --source=/path/to/the/Tasks/directory  >> /dev/null 2>&1
+The scheduler scans the respective directory recursively, collects all the task files ending with `Tasks.php`, and registers them the with Sked's `Schedule` class. You can define tasks in the one file or across different files and directories based on their usage.
+ 
+ If you need to keep your task files in another location other than the default one, you may define the source path using the `--source` option - when installing the master cron:
+ 
+ ```bash
+ +* * * * * path/to/php path/to/your/project/vendor/bin/sked schedule:run --source=/path/to/the/Tasks/directory  >> /dev/null 2>&1
 ```
 
 Here's another example:
@@ -277,7 +258,7 @@ return $schedule;
 
 ## Prevent Task Overlaps
 
-By default, scheduled tasks will be run even if the previous instance of the task is still running. To prevent this, you may use `withoutOverlapping()` method:
+By default, scheduled tasks will be run even if the previous instance of the task is still running. To prevent this, you may use `withoutOverlapping()` method to avoid task overlaps.
 
 ```php
 <?php
@@ -291,6 +272,38 @@ $schedule->run('./backup.sh')->withoutOverlapping();
 return $schedule;
 
 ```
+
+The locking mechanism is performed in the OS file level. However, there are situations (for instance on system failure) when the lock file isn't released after the task execution is completed. To prevent such deadlocks, Sked ignores the lock if the lock creation time is older than an hour. You can change this value by passing the lock validity duration to the `withoutOverlapping()` method:
+
+```php
+<?php
+
+// ...
+
+$schedule->run('./backup.sh')->withoutOverlapping('00:15');
+
+// ...
+
+return $schedule;
+```
+
+In the above snippet, If the lock is not released for any reasons, it will be force-released after 15 minutes.
+
+If you pass an interger value, it is considered as hour:
+
+```php
+<?php
+
+// ...
+
+$schedule->run('./backup.sh')->withoutOverlapping(2);
+
+// ...
+
+return $scheduler;
+```
+
+In the above example, the lock is force released after two hours.
 
 ## Handling Output
 
@@ -371,9 +384,24 @@ return $schedule;
 
 ```
 
-## Credits
 
-Credit goes to [Taylor Otwell](https://github.com/taylorotwell) for creating such a nice tool and documentation.
+## Ping a URL
+
+You can also ping a url before and after a task is executed:
+
+```php
+<?php
+
+// ...
+
+$shcedule->run('./back.sh')
+         ->beforePing('uri-to-ping-before')
+         ->thenPing('uri-to-ping-after');
+// ...
+
+return $schedule;
+
+```
 
 ## If You Need Help
 
